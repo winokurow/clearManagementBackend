@@ -1,21 +1,34 @@
 package de.zottig.clean.service;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import de.zottig.clean.persistence.dao.RoleRepository;
 import de.zottig.clean.persistence.dao.UserRepository;
+import de.zottig.clean.persistence.model.Role;
 import de.zottig.clean.persistence.model.User;
+import de.zottig.clean.web.dto.GroupDto;
+import de.zottig.clean.web.error.UserAlreadyExistException;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
 	private final UserRepository userRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	public CustomUserDetailsService(UserRepository userRepository) {
@@ -32,6 +45,33 @@ public class CustomUserDetailsService implements UserDetailsService {
 					String.format("User %s does not exist!", username));
 		}
 		return new UserRepositoryUserDetails(user);
+	}
+
+	public void registerNewUserAccount(final GroupDto accountDto) {
+		if (emailExist(accountDto.getEmail())) {
+			throw new UserAlreadyExistException(
+					"There is an account with that email adress: "
+							+ accountDto.getEmail());
+		}
+		final User user = new User();
+
+		user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+		user.setEmail(accountDto.getEmail());
+
+		Set<Role> roles = new HashSet<Role>();
+		Role admin = roleRepository.findByName("ROLE_USER");
+		if (accountDto.getIsAdmin()) {
+			Role member = roleRepository.findByName("ROLE_ADMIN");
+
+			roles.add(admin);
+			roles.add(member);
+		}
+		user.setRoles(roles);
+		userRepository.save(user);
+	}
+
+	public boolean emailExist(final String email) {
+		return userRepository.findByEmail(email) != null;
 	}
 
 	private final static class UserRepositoryUserDetails extends User

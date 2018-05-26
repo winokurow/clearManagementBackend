@@ -1,6 +1,5 @@
 package de.zottig.clean.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.zottig.clean.persistence.dao.MemberRepository;
-import de.zottig.clean.persistence.dao.RoleRepository;
 import de.zottig.clean.persistence.model.Member;
-import de.zottig.clean.persistence.model.Role;
 import de.zottig.clean.web.dto.GroupDto;
 import de.zottig.clean.web.error.UserAlreadyExistException;
 
@@ -25,12 +22,6 @@ public class MemberServiceImpl implements IMemberService {
 	@Autowired
 	private MemberRepository repository;
 
-	@Autowired
-	private RoleRepository roleRepository;
-
-	// @Autowired
-	// private PasswordEncoder passwordEncoder;
-
 	public static String APP_NAME = "Clean Manager";
 
 	// API
@@ -38,7 +29,9 @@ public class MemberServiceImpl implements IMemberService {
 	@Override
 	public void registerNewUserAccount(final GroupDto accountDto) {
 		if (emailExist(accountDto.getEmail())) {
-			throw new UserAlreadyExistException("There is an account with that email adress: " + accountDto.getEmail());
+			throw new UserAlreadyExistException(
+					"There is an account with that email adress: "
+							+ accountDto.getEmail());
 		}
 		final Member user = new Member();
 
@@ -46,19 +39,6 @@ public class MemberServiceImpl implements IMemberService {
 		user.setLastName(accountDto.getLastname());
 		// user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
 		user.setEmail(accountDto.getEmail());
-
-		if (accountDto.getIsAdmin()) {
-			Role admin = roleRepository.findByName("member");
-			Role member = roleRepository.findByName("administrator");
-			List<Role> roles = new ArrayList<>();
-			roles.add(admin);
-			roles.add(member);
-			// user.setRoles(roles);
-		} else {
-			// user.setRoles(Arrays.asList(roleRepository.findByName("member")));
-
-		}
-		repository.save(user);
 	}
 
 	@Override
