@@ -37,11 +37,6 @@
     		<groupId>org.springframework.security</groupId>
     		<artifactId>spring-security-web</artifactId>
 		</dependency>
-		<dependency>
-    	<groupId>com.google.guava</groupId>
-   			<artifactId>guava</artifactId>
-    		<version>10.0.1</version>
-		</dependency>
         <dependency>
     		<groupId>org.springframework</groupId>
     		<artifactId>spring-context-support</artifactId>
@@ -51,9 +46,17 @@
     		<artifactId>spring-context</artifactId>
 		</dependency>
 		<dependency>
+    		<groupId>org.springframework.security.oauth</groupId>
+    		<artifactId>spring-security-oauth2</artifactId>
+		</dependency>
+		<dependency>
     		<groupId>org.springframework.security</groupId>
     		<artifactId>spring-security-core</artifactId>
 		</dependency>
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-jdbc</artifactId>
+		</dependency>  
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -76,6 +79,16 @@
 		<dependency>
     		<groupId>org.hibernate</groupId>
     		<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+    		<groupId>com.google.guava</groupId>
+   			<artifactId>guava</artifactId>
+    		<version>10.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.7</version>
 		</dependency>
 
 		

@@ -29,9 +29,9 @@ public class AssignedTask {
 	@NotNull
 	private Household household;
 
-	@ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
+	@ManyToOne(cascade = CascadeType.ALL, targetEntity = Member.class)
 	@JoinColumn(name = "user_id")
-	private User assignedUser;
+	private Member assignedUser;
 
 	public AssignedTask() {
 		super();
@@ -83,11 +83,11 @@ public class AssignedTask {
 		this.household = household;
 	}
 
-	public User getUser() {
+	public Member getUser() {
 		return assignedUser;
 	}
 
-	public void setAssignedUser(User user) {
+	public void setAssignedUser(Member user) {
 		this.assignedUser = user;
 	}
 

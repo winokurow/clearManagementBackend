@@ -1,13 +1,10 @@
 package de.zottig.clean.persistence.dao;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import de.zottig.clean.persistence.model.User;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
 
-	User findOneByEmail(String email);
-
-	@Override
-	void delete(User user);
+	User findByEmail(String email);
 }

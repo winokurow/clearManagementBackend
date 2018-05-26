@@ -1,28 +1,25 @@
 package de.zottig.clean.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.zottig.clean.service.IUserService;
+import de.zottig.clean.persistence.dao.UserRepository;
+import de.zottig.clean.persistence.model.User;
 
 @RestController
-@RequestMapping("api")
 public class UserController {
+
+	private final UserRepository userRepository;
+
 	@Autowired
-	private IUserService userService;
-
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	public ResponseEntity<?> list() {
-		return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
+	public UserController(UserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 
-	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> get(@PathVariable Long id) {
-		return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
+	@RequestMapping("/users")
+	public Iterable<User> getUsers() {
+		return userRepository.findAll();
 	}
+
 }

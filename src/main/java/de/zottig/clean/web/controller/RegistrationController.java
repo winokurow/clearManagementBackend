@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.zottig.clean.service.IHouseholdService;
-import de.zottig.clean.service.IUserService;
+import de.zottig.clean.service.IMemberService;
 import de.zottig.clean.web.dto.ErrorDto;
 import de.zottig.clean.web.dto.HouseholdDto;
 import de.zottig.clean.web.dto.GroupDto;
@@ -29,7 +29,7 @@ public class RegistrationController {
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private IUserService userService;
+	private IMemberService userService;
 
 	@Autowired
 	private IHouseholdService householdService;

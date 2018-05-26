@@ -35,6 +35,9 @@ public class Task {
 	@NotNull
 	private int priority;
 
+	@NotNull
+	private int complexity;
+
 	public Task() {
 		super();
 	}
@@ -102,6 +105,14 @@ public class Task {
 		this.group = group;
 	}
 
+	public int getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(int complexity) {
+		this.complexity = complexity;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -136,7 +147,8 @@ public class Task {
 		builder.append("Task [name=").append(name).append("]").append("Task [group=").append(group).append("]")
 				.append("[id=").append(id).append("]").append("[description=").append(description).append("]")
 				.append("[shedule=").append(shedule).append("]").append("[nextRun=").append(df.format(nextRun))
-				.append("]").append("[priority=").append(priority).append("]").append("[id=").append(id).append("]");
+				.append("]").append("[priority=").append(priority).append("][complexity=").append(complexity)
+				.append("]").append("[id=").append(id).append("]");
 		return builder.toString();
 	}
 

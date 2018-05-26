@@ -16,16 +16,18 @@ CREATE TABLE `role` (
 --
 
 LOCK TABLES `role` WRITE;
-INSERT INTO `role` VALUES (1,'ROLE_USER');
+INSERT INTO `role` VALUES (1,'member');
+INSERT INTO `role` VALUES (1,'administrator');
 UNLOCK TABLES;
 
 --
--- Table structure for table `user`
+-- Table structure for table `user_account`
 --
 
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
+DROP TABLE IF EXISTS `members`;
+CREATE TABLE `members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
