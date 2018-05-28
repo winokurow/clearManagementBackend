@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.zottig.clean.persistence.dao.HouseholdRepository;
 import de.zottig.clean.persistence.dao.MemberRepository;
+import de.zottig.clean.persistence.model.Household;
 import de.zottig.clean.persistence.model.Member;
 import de.zottig.clean.web.dto.GroupDto;
 import de.zottig.clean.web.error.UserAlreadyExistException;
@@ -22,12 +24,16 @@ public class MemberServiceImpl implements IMemberService {
 	@Autowired
 	private MemberRepository repository;
 
+	@Autowired
+	private HouseholdRepository householdRepository;
+
 	public static String APP_NAME = "Clean Manager";
 
 	// API
 
 	@Override
-	public void registerNewUserAccount(final GroupDto accountDto) {
+	public void registerNewUserAccount(final GroupDto accountDto,
+			String householdName) {
 		if (emailExist(accountDto.getEmail())) {
 			throw new UserAlreadyExistException(
 					"There is an account with that email adress: "
@@ -39,6 +45,10 @@ public class MemberServiceImpl implements IMemberService {
 		user.setLastName(accountDto.getLastname());
 		// user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
 		user.setEmail(accountDto.getEmail());
+
+		Household household = householdRepository.findOneByName(householdName);
+		user.setHousehold(household);
+		repository.save(user);
 	}
 
 	@Override

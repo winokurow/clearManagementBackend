@@ -95,7 +95,8 @@ public class RegistrationController {
 			for (GroupDto user : household.getMembers()) {
 				LOGGER.info(user.toString());
 				userService.registerNewUserAccount(user);
-				memberService.registerNewUserAccount(user);
+				memberService.registerNewUserAccount(user,
+						household.getHouseholdname());
 
 			}
 			return new ResponseEntity<>(household, HttpStatus.CREATED);

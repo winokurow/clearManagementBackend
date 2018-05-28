@@ -8,7 +8,8 @@ import de.zottig.clean.web.error.UserAlreadyExistException;
 
 public interface IMemberService {
 
-	void registerNewUserAccount(GroupDto accountDto) throws UserAlreadyExistException;
+	void registerNewUserAccount(GroupDto accountDto, String householdName)
+			throws UserAlreadyExistException;
 
 	void deleteUser(Member user);
 
