@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,10 +30,27 @@ public class TasksController {
 	}
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
-	@RequestMapping(value = "tasks/household/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> get(@PathVariable Long id) {
+	@RequestMapping(value = "tasks", method = RequestMethod.GET)
+	public ResponseEntity<?> get() {
+		Authentication authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
 		LOGGER.info("*******************");
-		List<AssignedTask> tasks = AssignedTasksService.getTasks(id);
+		String user = authentication.getName().toString();
+		List<AssignedTask> tasks = AssignedTasksService
+				.getTasksByHousehold(user);
+		LOGGER.info("Complexity =" + tasks.get(0).getTask().getComplexity());
+		return new ResponseEntity<>(tasks, HttpStatus.OK);
+	}
+
+	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
+	@RequestMapping(value = "tasks", method = RequestMethod.POST)
+	public ResponseEntity<?> submitTaks() {
+		Authentication authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
+		LOGGER.info("*******************");
+		String user = authentication.getName().toString();
+		List<AssignedTask> tasks = AssignedTasksService
+				.getTasksByHousehold(user);
 		LOGGER.info("Complexity =" + tasks.get(0).getTask().getComplexity());
 		return new ResponseEntity<>(tasks, HttpStatus.OK);
 	}
