@@ -33,17 +33,16 @@ public class OAuth2ServerConfiguration {
 
 		@Override
 		public void configure(ResourceServerSecurityConfigurer resources) {
-			// @formatter:off
 			resources.resourceId(RESOURCE_ID);
-			// @formatter:on
 		}
 
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
-			// @formatter:off
-			http.authorizeRequests().antMatchers(HttpMethod.OPTIONS)
-					.permitAll();
-			// @formatter:on
+			http.authorizeRequests().antMatchers("/").permitAll()
+					.antMatchers("/api/tasks/**").authenticated()
+					.antMatchers("/api/task/**").authenticated()
+					.antMatchers(HttpMethod.OPTIONS).permitAll().and()
+					.anonymous().disable();
 		}
 
 	}
@@ -78,7 +77,7 @@ public class OAuth2ServerConfiguration {
 				throws Exception {
 			clients.inMemory().withClient("clientapp")
 					.authorizedGrantTypes("password", "refresh_token")
-					.authorities("USER").scopes("read", "write")
+					.authorities("USER").scopes("read", "write", "tasks")
 					.resourceIds(RESOURCE_ID).secret("123456");
 		}
 

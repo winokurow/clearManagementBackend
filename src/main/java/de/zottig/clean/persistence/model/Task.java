@@ -1,24 +1,31 @@
 package de.zottig.clean.persistence.model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
+import de.zottig.clean.persistence.LocalDateTimeConverter;
 
 @Entity
 public class Task {
 
 	@Id
+	@Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@NotNull
-	private String group;
+	private String groupname;
 
 	@NotNull
 	private String name;
@@ -30,13 +37,19 @@ public class Task {
 	private String shedule;
 
 	@NotNull
-	private Date nextRun;
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime nextRun;
 
 	@NotNull
 	private int priority;
 
 	@NotNull
 	private int complexity;
+
+	@ManyToOne(cascade = CascadeType.ALL, targetEntity = Household.class)
+	@JoinColumn(name = "household_id")
+	@NotNull
+	private Household household;
 
 	public Task() {
 		super();
@@ -81,11 +94,11 @@ public class Task {
 		this.shedule = shedule;
 	}
 
-	public Date getNextRun() {
+	public LocalDateTime getNextRun() {
 		return nextRun;
 	}
 
-	public void setNextRun(Date nextRun) {
+	public void setNextRun(LocalDateTime nextRun) {
 		this.nextRun = nextRun;
 	}
 
@@ -97,12 +110,12 @@ public class Task {
 		this.priority = priority;
 	}
 
-	public String getGroup() {
-		return group;
+	public String getGroupname() {
+		return groupname;
 	}
 
-	public void setGroup(String group) {
-		this.group = group;
+	public void setGroupname(String groupname) {
+		this.groupname = groupname;
 	}
 
 	public int getComplexity() {
@@ -111,6 +124,14 @@ public class Task {
 
 	public void setComplexity(int complexity) {
 		this.complexity = complexity;
+	}
+
+	public Household getHousehold() {
+		return household;
+	}
+
+	public void setHousehold(Household household) {
+		this.household = household;
 	}
 
 	@Override
@@ -134,7 +155,7 @@ public class Task {
 		}
 
 		final Task tasks = (Task) obj;
-		if (!tasks.equals(tasks.name)) {
+		if (!name.equals(tasks.name) || !household.equals(tasks.household)) {
 			return false;
 		}
 		return true;
@@ -142,13 +163,19 @@ public class Task {
 
 	@Override
 	public String toString() {
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter
+				.ofPattern("yyyy-MM-dd HH:mm:ss");
 		final StringBuilder builder = new StringBuilder();
-		builder.append("Task [name=").append(name).append("]").append("Task [group=").append(group).append("]")
-				.append("[id=").append(id).append("]").append("[description=").append(description).append("]")
-				.append("[shedule=").append(shedule).append("]").append("[nextRun=").append(df.format(nextRun))
-				.append("]").append("[priority=").append(priority).append("][complexity=").append(complexity)
-				.append("]").append("[id=").append(id).append("]");
+		builder.append("Task [name=").append(name).append("]")
+				.append("Task [group=").append(groupname).append("]")
+				.append("[id=").append(id).append("]").append("[description=")
+				.append(description).append("]").append("[shedule=")
+				.append(shedule).append("]").append("[nextRun=")
+				.append(nextRun.format(formatter)).append("]")
+				.append("[priority=").append(priority).append("][complexity=")
+				.append(complexity).append("]").append("[household=")
+				.append(household).append("]").append("[id=").append(id)
+				.append("]");
 		return builder.toString();
 	}
 
