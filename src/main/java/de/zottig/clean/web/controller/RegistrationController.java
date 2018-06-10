@@ -23,6 +23,7 @@ import de.zottig.clean.web.dto.GroupDto;
 import de.zottig.clean.web.dto.HouseholdDto;
 import de.zottig.clean.web.error.HouseholdAlreadyExistException;
 import de.zottig.clean.web.error.UserAlreadyExistException;
+import de.zottig.clean.web.util.GenericResponse;
 
 @RestController
 @RequestMapping("api")
@@ -56,7 +57,7 @@ public class RegistrationController {
 	 * @throws HouseholdAlreadyExistException
 	 *             - Household already exists
 	 */
-	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/register", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> register(
 			@Validated @RequestBody final HouseholdDto household,
 			BindingResult bindingResult)
@@ -99,7 +100,9 @@ public class RegistrationController {
 						household.getHouseholdname());
 
 			}
-			return new ResponseEntity<>(household, HttpStatus.CREATED);
+			return new ResponseEntity<>(
+					new GenericResponse("Househols is registriert", ""),
+					HttpStatus.CREATED);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			return new ResponseEntity<>(new ErrorDto("Server Error"),

@@ -1,7 +1,9 @@
 package de.zottig.clean.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import de.zottig.clean.persistence.model.Member;
 import de.zottig.clean.persistence.model.Task;
 import de.zottig.clean.service.IMemberService;
 import de.zottig.clean.service.ITasksService;
+import de.zottig.clean.web.dto.TaskDto;
 import de.zottig.clean.web.util.GenericResponse;
 
 @RestController
@@ -44,7 +47,11 @@ public class TasksController {
 				.getAuthentication();
 		String user = authentication.getName().toString();
 		List<Task> tasks = TasksService.getСurrentTasksByHousehold(user);
-		return new ResponseEntity<>(tasks, HttpStatus.OK);
+		List<TaskDto> taskDtos = new ArrayList<>();
+		for (Task task : tasks) {
+			taskDtos.add(convertToDto(task));
+		}
+		return new ResponseEntity<>(taskDtos, HttpStatus.OK);
 	}
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
@@ -70,5 +77,11 @@ public class TasksController {
 		}
 		task = TasksService.submitTask(task);
 		return new ResponseEntity<>(task, HttpStatus.OK);
+	}
+
+	private TaskDto convertToDto(Task task) {
+		ModelMapper modelMapper = new ModelMapper();
+		TaskDto taskDto = modelMapper.map(task, TaskDto.class);
+		return taskDto;
 	}
 }
