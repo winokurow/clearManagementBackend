@@ -1,7 +1,7 @@
 package de.zottig.clean.persistence.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +33,7 @@ public class User {
 	@JoinTable(name = "user_role", joinColumns = {
 			@JoinColumn(name = "user_id")}, inverseJoinColumns = {
 					@JoinColumn(name = "role_id")})
-	private Set<Role> roles = new HashSet<Role>();
+	private List<Role> roles = new ArrayList<Role>();
 
 	public User() {
 	}
@@ -70,11 +70,11 @@ public class User {
 		this.password = password;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 

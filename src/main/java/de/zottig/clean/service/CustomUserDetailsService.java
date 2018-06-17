@@ -1,8 +1,8 @@
 package de.zottig.clean.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -58,13 +58,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 		user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
 		user.setEmail(accountDto.getEmail());
 
-		Set<Role> roles = new HashSet<Role>();
-		Role admin = roleRepository.findByName("ROLE_USER");
+		List<Role> roles = new ArrayList<>();
+		Role member = roleRepository.findByName("ROLE_USER");
+		roles.add(member);
 		if (accountDto.getIsAdmin()) {
-			Role member = roleRepository.findByName("ROLE_ADMIN");
-
+			Role admin = roleRepository.findByName("ROLE_ADMIN");
 			roles.add(admin);
-			roles.add(member);
 		}
 		user.setRoles(roles);
 		userRepository.save(user);

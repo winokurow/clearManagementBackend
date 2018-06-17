@@ -6,9 +6,11 @@ import de.zottig.clean.persistence.model.Task;
 
 public interface ITasksService {
 
-	List<Task> getСurrentTasksByHousehold(String email);
+	List<Task> getTasks(String email, boolean isOnlyCurrent);
 
 	Task submitTask(Task task);
 
 	Task getTaskById(long id);
+
+	Task updateTask(Task task);
 }

@@ -3,26 +3,35 @@ package de.zottig.clean.web.dto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 public class TaskDto {
 
 	private Long id;
 
+	@NotNull
 	private String groupname;
 
+	@NotNull
 	private String name;
 
+	@NotNull
 	private String description;
 
+	@NotNull
 	private String shedule;
 
-	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@NotNull
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	private LocalDateTime nextRun;
 
+	@NotNull
 	private int priority;
 
+	@NotNull
 	private int complexity;
 
 	public TaskDto() {

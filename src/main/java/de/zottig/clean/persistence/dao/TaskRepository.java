@@ -16,4 +16,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
 	List<Task> findCurrentByHouseholdIdAndNextRunBefore(Long long1,
 			LocalDateTime localDateTime);
+
+	List<Task> findCurrentByHouseholdId(Long long1);
 }
