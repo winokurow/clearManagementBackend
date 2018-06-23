@@ -36,9 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username)
-			throws UsernameNotFoundException {
-		System.out.println("here");
+	public UserDetails loadUserByUsername(String username) {
 		User user = userRepository.findByEmail(username);
 		if (user == null) {
 			throw new UsernameNotFoundException(
@@ -73,7 +71,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return userRepository.findByEmail(email) != null;
 	}
 
-	private final static class UserRepositoryUserDetails extends User
+	private static final class UserRepositoryUserDetails extends User
 			implements
 				UserDetails {
 

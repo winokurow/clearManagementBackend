@@ -84,4 +84,27 @@ public class TasksServiceImpl implements ITasksService {
 		return repository.saveAndFlush(task);
 	}
 
+	/**
+	 * Insert a task
+	 * 
+	 * @param task
+	 *            - new task
+	 * @return inserted task
+	 */
+	@Override
+	public Task insertTask(Task task) {
+		return repository.saveAndFlush(task);
+	}
+
+	/**
+	 * Delete a task
+	 * 
+	 * @param task
+	 *            - task to delete
+	 */
+	@Override
+	public void deleteTask(long id) {
+		repository.delete(id);
+	}
+
 }

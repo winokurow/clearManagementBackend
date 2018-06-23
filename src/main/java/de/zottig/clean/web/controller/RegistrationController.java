@@ -45,7 +45,7 @@ public class RegistrationController {
 
 	/**
 	 * 
-	 * Post request that registrate new household
+	 * Post request that register new household
 	 * 
 	 * @param household
 	 *            - new household

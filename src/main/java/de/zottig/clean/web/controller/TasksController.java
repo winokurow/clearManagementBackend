@@ -114,10 +114,7 @@ public class TasksController {
 		Task updatedTask = convertToEntity(updatedTaskDto);
 		updatedTask.setId(id);
 		updatedTask.setHousehold(oldTask.getHousehold());
-		System.out.println("1");
 		Task task = TasksService.updateTask(updatedTask);
-		System.out.println("2");
-		System.out.println(task);
 		return new ResponseEntity<>(convertToDto(task), HttpStatus.OK);
 	}
 
@@ -138,26 +135,43 @@ public class TasksController {
 
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
-		String user = authentication.getName().toString();
+		String user = authentication.getName();
 		Member member = memberService.findUserByEmail(user);
 
 		Task newTask = convertToEntity(newTaskDto);
-
 		newTask.setHousehold(member.getHousehold());
-		Task task = TasksService.updateTask(newTask);
-		System.out.println(task);
+		Task task = TasksService.insertTask(newTask);
 		return new ResponseEntity<>(convertToDto(task), HttpStatus.OK);
+	}
+
+	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
+	@RequestMapping(value = "/tasks/task/{id}/delete", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteTask(@PathVariable Long id) {
+
+		Authentication authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
+		String user = authentication.getName();
+		Member member = memberService.findUserByEmail(user);
+
+		Task oldTask = TasksService.getTaskById(id);
+
+		if ((oldTask == null) || (oldTask.getHousehold().getId() != member
+				.getHousehold().getId())) {
+			GenericResponse response = new GenericResponse("Task not found");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+		}
+
+		TasksService.deleteTask(id);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	private TaskDto convertToDto(Task task) {
 		ModelMapper modelMapper = new ModelMapper();
-		TaskDto taskDto = modelMapper.map(task, TaskDto.class);
-		return taskDto;
+		return modelMapper.map(task, TaskDto.class);
 	}
 
 	private Task convertToEntity(TaskDto taskDto) {
 		ModelMapper modelMapper = new ModelMapper();
-		Task task = modelMapper.map(taskDto, Task.class);
-		return task;
+		return modelMapper.map(taskDto, Task.class);
 	}
 }
