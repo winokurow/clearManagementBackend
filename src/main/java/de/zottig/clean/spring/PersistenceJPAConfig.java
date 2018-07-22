@@ -20,9 +20,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource({ "classpath:persistence.properties" })
-@ComponentScan({ "de.zottig.clean.persistence" })
+@ComponentScan({"de.zottig.clean.persistence"})
 @EnableJpaRepositories(basePackages = "de.zottig.clean.persistence.dao")
+@PropertySource({"classpath:persistence-${spring.profiles.active}.properties"})
 public class PersistenceJPAConfig {
 
 	@Autowired
@@ -38,7 +38,7 @@ public class PersistenceJPAConfig {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
-		em.setPackagesToScan(new String[] { "de.zottig.clean.persistence.model" });
+		em.setPackagesToScan(new String[]{"de.zottig.clean.persistence.model"});
 		final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
 		em.setJpaProperties(additionalProperties());
@@ -58,7 +58,8 @@ public class PersistenceJPAConfig {
 	@Bean
 	public JpaTransactionManager transactionManager() {
 		final JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+		transactionManager
+				.setEntityManagerFactory(entityManagerFactory().getObject());
 		return transactionManager;
 	}
 
@@ -69,8 +70,10 @@ public class PersistenceJPAConfig {
 
 	protected Properties additionalProperties() {
 		final Properties hibernateProperties = new Properties();
-		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-		hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto",
+				env.getProperty("hibernate.hbm2ddl.auto"));
+		hibernateProperties.setProperty("hibernate.dialect",
+				env.getProperty("hibernate.dialect"));
 		return hibernateProperties;
 	}
 

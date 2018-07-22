@@ -60,8 +60,7 @@ public class RegistrationController {
 	@RequestMapping(value = "/register", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> register(
 			@Validated @RequestBody final HouseholdDto household,
-			BindingResult bindingResult)
-			throws UserAlreadyExistException, HouseholdAlreadyExistException {
+			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
 			LOGGER.info("Error");

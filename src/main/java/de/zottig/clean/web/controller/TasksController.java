@@ -34,10 +34,10 @@ import de.zottig.clean.web.util.GenericResponse;
 @RestController
 @RequestMapping("api")
 public class TasksController {
-	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private ITasksService TasksService;
+	private ITasksService tasksService;
 
 	@Autowired
 	private IMemberService memberService;
@@ -56,7 +56,7 @@ public class TasksController {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String email = authentication.getName().toString();
-		List<Task> tasks = TasksService.getTasks(email, showOnlyCurrent);
+		List<Task> tasks = tasksService.getTasks(email, showOnlyCurrent);
 		List<TaskDto> taskDtos = new ArrayList<>();
 		for (Task task : tasks) {
 			taskDtos.add(convertToDto(task));
@@ -67,19 +67,18 @@ public class TasksController {
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
 	@RequestMapping(value = "/tasks/task/{id}/submit", method = RequestMethod.POST)
 	public ResponseEntity<?> submitTask(@PathVariable Long id) {
-		LOGGER.info("*******************1");
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
-		String user = authentication.getName().toString();
+		String user = authentication.getName();
 		Member member = memberService.findUserByEmail(user);
-		Task task = TasksService.getTaskById(id);
+		Task task = tasksService.getTaskById(id);
 
 		if ((task == null) || (task.getHousehold().getId() != member
 				.getHousehold().getId())) {
 			GenericResponse response = new GenericResponse("Task not found");
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
-		task = TasksService.submitTask(task);
+		task = tasksService.submitTask(task, member);
 		return new ResponseEntity<>(task, HttpStatus.OK);
 	}
 
@@ -90,7 +89,7 @@ public class TasksController {
 			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
-			LOGGER.info("Error");
+			logger.info("Error");
 			return new ResponseEntity<>(
 					new ErrorDto(bindingResult.getAllErrors().stream()
 							.map(x -> x.getDefaultMessage())
@@ -100,10 +99,10 @@ public class TasksController {
 
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
-		String user = authentication.getName().toString();
+		String user = authentication.getName();
 		Member member = memberService.findUserByEmail(user);
 
-		Task oldTask = TasksService.getTaskById(id);
+		Task oldTask = tasksService.getTaskById(id);
 
 		if ((oldTask == null) || (oldTask.getHousehold().getId() != member
 				.getHousehold().getId())) {
@@ -114,7 +113,7 @@ public class TasksController {
 		Task updatedTask = convertToEntity(updatedTaskDto);
 		updatedTask.setId(id);
 		updatedTask.setHousehold(oldTask.getHousehold());
-		Task task = TasksService.updateTask(updatedTask);
+		Task task = tasksService.updateTask(updatedTask);
 		return new ResponseEntity<>(convertToDto(task), HttpStatus.OK);
 	}
 
@@ -125,7 +124,7 @@ public class TasksController {
 			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
-			LOGGER.info("Error");
+			logger.info("Error");
 			return new ResponseEntity<>(
 					new ErrorDto(bindingResult.getAllErrors().stream()
 							.map(x -> x.getDefaultMessage())
@@ -140,7 +139,7 @@ public class TasksController {
 
 		Task newTask = convertToEntity(newTaskDto);
 		newTask.setHousehold(member.getHousehold());
-		Task task = TasksService.insertTask(newTask);
+		Task task = tasksService.insertTask(newTask);
 		return new ResponseEntity<>(convertToDto(task), HttpStatus.OK);
 	}
 
@@ -153,7 +152,7 @@ public class TasksController {
 		String user = authentication.getName();
 		Member member = memberService.findUserByEmail(user);
 
-		Task oldTask = TasksService.getTaskById(id);
+		Task oldTask = tasksService.getTaskById(id);
 
 		if ((oldTask == null) || (oldTask.getHousehold().getId() != member
 				.getHousehold().getId())) {
@@ -161,7 +160,7 @@ public class TasksController {
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
-		TasksService.deleteTask(id);
+		tasksService.deleteTask(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

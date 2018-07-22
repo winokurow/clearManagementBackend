@@ -20,9 +20,10 @@ public class HouseholdServiceImpl implements IHouseholdService {
 	// API
 
 	@Override
-	public Household registerNewHousehold(final String householdname) throws HouseholdAlreadyExistException {
+	public Household registerNewHousehold(final String householdname) {
 		if (isHouseholdExists(householdname)) {
-			throw new HouseholdAlreadyExistException("There is a household with that name: " + householdname);
+			throw new HouseholdAlreadyExistException(
+					"There is a household with that name: " + householdname);
 		}
 		final Household household = new Household();
 		household.setName(householdname);

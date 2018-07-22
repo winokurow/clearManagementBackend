@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.zottig.clean.persistence.dao.TaskRepository;
+import de.zottig.clean.persistence.model.CleaningHistory;
 import de.zottig.clean.persistence.model.Member;
 import de.zottig.clean.persistence.model.Task;
 
@@ -21,6 +22,9 @@ public class TasksServiceImpl implements ITasksService {
 
 	@Autowired
 	private IMemberService memberService;
+
+	@Autowired
+	private ICleaningHistoryService historyService;
 
 	/**
 	 * Get tasks list for household
@@ -47,15 +51,26 @@ public class TasksServiceImpl implements ITasksService {
 	 * 
 	 * @param task
 	 *            - task to submit
+	 * @param member
+	 *            - member that submit the tasks
 	 * @return submitted task
 	 */
 	@Override
-	public Task submitTask(Task task) {
+	public Task submitTask(Task task, Member member) {
 		Duration duration = Duration.parse(task.getShedule());
 		LocalDateTime now = LocalDateTime.now();
 		now = now.plus(duration);
 		task.setNextRun(now);
 		task = repository.save(task);
+
+		CleaningHistory history = new CleaningHistory();
+		history.setTaskname(task.getName());
+		history.setTimestamp(LocalDateTime.now());
+		history.setAction("SUBMIT");
+		history.setComplexity(task.getComplexity());
+		history.setMember(member);
+		historyService.submitHistory(history);
+
 		return task;
 
 	}

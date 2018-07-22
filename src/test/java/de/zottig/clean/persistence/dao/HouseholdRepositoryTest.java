@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import de.zottig.clean.persistence.model.Household;
 
 @RunWith(SpringRunner.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 public class HouseholdRepositoryTest {
 
@@ -26,8 +28,8 @@ public class HouseholdRepositoryTest {
 		// given
 		Household household = new Household();
 		household.setName("test1");
-		household.setId(1L);
-		entityManager.persist(household);
+		// household.setId(1L);
+		entityManager.persistAndFlush(household);
 		entityManager.flush();
 
 		// when
@@ -35,7 +37,7 @@ public class HouseholdRepositoryTest {
 				.findOneByName(household.getName());
 
 		// then
-		assertThat(found.getName()).isEqualTo(household.getName());
+		assertThat(found).isEqualTo(household.getName());
 	}
 
 }

@@ -1,8 +1,9 @@
 package de.zottig.clean.persistence.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -25,8 +26,8 @@ public class Role implements GrantedAuthority {
 	@NotEmpty
 	private String name;
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
-	private Set<User> users = new HashSet<User>();
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, mappedBy = "roles")
+	private List<User> users = new ArrayList<>();
 
 	@Override
 	public String getAuthority() {
@@ -49,11 +50,11 @@ public class Role implements GrantedAuthority {
 		this.name = name;
 	}
 
-	public Set<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(Set<User> users) {
+	public void setUsers(List<User> users) {
 		this.users = users;
 	}
 

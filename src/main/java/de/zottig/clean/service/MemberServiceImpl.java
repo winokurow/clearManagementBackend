@@ -29,8 +29,6 @@ public class MemberServiceImpl implements IMemberService {
 
 	public static String APP_NAME = "Clean Manager";
 
-	// API
-
 	@Override
 	public void registerNewUserAccount(final GroupDto accountDto,
 			String householdName) {
@@ -52,11 +50,6 @@ public class MemberServiceImpl implements IMemberService {
 	}
 
 	@Override
-	public void deleteUser(final Member user) {
-		repository.delete(user);
-	}
-
-	@Override
 	public Member findUserByEmail(final String email) {
 		return repository.findOneByEmail(email);
 	}
@@ -75,5 +68,16 @@ public class MemberServiceImpl implements IMemberService {
 	@Override
 	public List<Member> getUsers() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<Member> getMembersByHouseholdId(Long householdId) {
+		return repository.findByHouseholdId(householdId);
+	}
+
+	@Override
+	public void deleteUser(Member user) {
+		LOGGER.error("OPERATION 'delete User' is not supported.");
+
 	}
 }

@@ -20,4 +20,6 @@ public interface IMemberService {
 	List<Member> getUsers();
 
 	boolean emailExist(String email);
+
+	public List<Member> getMembersByHouseholdId(Long householdId);
 }
