@@ -1,5 +1,6 @@
 package de.zottig.clean.web.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.zottig.clean.persistence.model.Member;
+import de.zottig.clean.persistence.model.Role;
 import de.zottig.clean.persistence.model.Task;
+import de.zottig.clean.persistence.model.User;
+import de.zottig.clean.service.CustomUserDetailsService;
 import de.zottig.clean.service.IHouseholdService;
 import de.zottig.clean.service.IMemberService;
 import de.zottig.clean.service.ITasksService;
@@ -45,6 +49,9 @@ public class TasksController {
 	@Autowired
 	private IHouseholdService householdService;
 
+	@Autowired
+	private CustomUserDetailsService userService;
+
 	public TasksController() {
 		super();
 	}
@@ -55,7 +62,7 @@ public class TasksController {
 			@RequestParam("show_only_current") boolean showOnlyCurrent) {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
-		String email = authentication.getName().toString();
+		String email = authentication.getName();
 		List<Task> tasks = tasksService.getTasks(email, showOnlyCurrent);
 		List<TaskDto> taskDtos = new ArrayList<>();
 		for (Task task : tasks) {
@@ -84,7 +91,8 @@ public class TasksController {
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
 	@RequestMapping(value = "/tasks/task/{id}/change", method = RequestMethod.POST)
-	public ResponseEntity<?> changeTask(@PathVariable Long id,
+	public ResponseEntity<?> changeTask(Principal principal,
+			@PathVariable Long id,
 			@Validated @RequestBody final TaskDto updatedTaskDto,
 			BindingResult bindingResult) {
 
@@ -102,10 +110,16 @@ public class TasksController {
 		String user = authentication.getName();
 		Member member = memberService.findUserByEmail(user);
 
+		User activeUser = (User) ((Authentication) principal).getPrincipal();
+		List<Role> roles = activeUser.getRoles();
+		Role admin = roles.stream()
+				.filter(role -> "ROLE_ADMIN".equals(role.getName())).findAny()
+				.orElse(null);
+
 		Task oldTask = tasksService.getTaskById(id);
 
 		if ((oldTask == null) || (oldTask.getHousehold().getId() != member
-				.getHousehold().getId())) {
+				.getHousehold().getId()) || (admin == null)) {
 			GenericResponse response = new GenericResponse("Task not found");
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
@@ -119,7 +133,7 @@ public class TasksController {
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
 	@RequestMapping(value = "/tasks/task/create", method = RequestMethod.PUT)
-	public ResponseEntity<?> createTask(
+	public ResponseEntity<?> createTask(Principal principal,
 			@Validated @RequestBody final TaskDto newTaskDto,
 			BindingResult bindingResult) {
 
@@ -130,6 +144,16 @@ public class TasksController {
 							.map(x -> x.getDefaultMessage())
 							.collect(Collectors.joining(","))),
 					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		User activeUser = (User) ((Authentication) principal).getPrincipal();
+		List<Role> roles = activeUser.getRoles();
+		Role admin = roles.stream()
+				.filter(role -> "ROLE_ADMIN".equals(role.getName())).findAny()
+				.orElse(null);
+		if (admin == null) {
+			GenericResponse response = new GenericResponse("Task not found");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
 		Authentication authentication = SecurityContextHolder.getContext()
@@ -145,7 +169,8 @@ public class TasksController {
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
 	@RequestMapping(value = "/tasks/task/{id}/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteTask(@PathVariable Long id) {
+	public ResponseEntity<?> deleteTask(Principal principal,
+			@PathVariable Long id) {
 
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
@@ -154,8 +179,14 @@ public class TasksController {
 
 		Task oldTask = tasksService.getTaskById(id);
 
+		User activeUser = (User) ((Authentication) principal).getPrincipal();
+		List<Role> roles = activeUser.getRoles();
+		Role admin = roles.stream()
+				.filter(role -> "ROLE_ADMIN".equals(role.getName())).findAny()
+				.orElse(null);
+
 		if ((oldTask == null) || (oldTask.getHousehold().getId() != member
-				.getHousehold().getId())) {
+				.getHousehold().getId()) || (admin == null)) {
 			GenericResponse response = new GenericResponse("Task not found");
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}

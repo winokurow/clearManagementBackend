@@ -1,7 +1,7 @@
 package de.zottig.clean.service;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +41,7 @@ public class TasksServiceImpl implements ITasksService {
 			return repository.findCurrentByHouseholdIdAndNextRunBefore(
 					member.getHousehold().getId(), LocalDateTime.now());
 		} else {
-			return repository
-					.findCurrentByHouseholdId(member.getHousehold().getId());
+			return repository.findByHouseholdId(member.getHousehold().getId());
 		}
 	}
 
@@ -57,7 +56,8 @@ public class TasksServiceImpl implements ITasksService {
 	 */
 	@Override
 	public Task submitTask(Task task, Member member) {
-		Duration duration = Duration.parse(task.getShedule());
+		System.out.println(task.getShedule());
+		Period duration = Period.parse(task.getShedule());
 		LocalDateTime now = LocalDateTime.now();
 		now = now.plus(duration);
 		task.setNextRun(now);
