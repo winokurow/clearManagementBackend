@@ -9,6 +9,8 @@ public interface ITasksService {
 
 	public List<Task> getTasks(String email, boolean isOnlyCurrent);
 
+	public List<Task> getTaskPatterns();
+
 	public Task submitTask(Task task, Member member);
 
 	public Task getTaskById(long id);

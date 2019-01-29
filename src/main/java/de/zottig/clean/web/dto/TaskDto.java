@@ -36,6 +36,16 @@ public class TaskDto {
 	@NotNull
 	private int complexity;
 
+	private String room;
+
+	public String getRoom() {
+		return room;
+	}
+
+	public void setRoom(String room) {
+		this.room = room;
+	}
+
 	public TaskDto() {
 		super();
 	}
@@ -150,8 +160,8 @@ public class TaskDto {
 				.append(shedule).append("]").append("[nextRun=")
 				.append(nextRun.format(formatter)).append("]")
 				.append("[priority=").append(priority).append("][complexity=")
-				.append(complexity).append("]").append("[id=").append(id)
-				.append("]");
+				.append(complexity).append("][room=").append(room)
+				.append("][id=").append(id).append("]");
 		return builder.toString();
 	}
 

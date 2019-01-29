@@ -46,6 +46,15 @@ public class TasksServiceImpl implements ITasksService {
 	}
 
 	/**
+	 * Get task patterns list
+	 * 
+	 */
+	@Override
+	public List<Task> getTaskPatterns() {
+		return repository.findAllByInitial(1);
+	}
+
+	/**
 	 * Submit a task
 	 * 
 	 * @param task

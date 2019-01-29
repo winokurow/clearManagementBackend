@@ -51,6 +51,11 @@ public class Task {
 	@NotNull
 	private Household household;
 
+	@NotNull
+	private int initial;
+
+	private String room;
+
 	public Task() {
 		super();
 	}
@@ -134,6 +139,22 @@ public class Task {
 		this.household = household;
 	}
 
+	public int getInitial() {
+		return initial;
+	}
+
+	public void setInitial(int initial) {
+		this.initial = initial;
+	}
+
+	public String getRoom() {
+		return room;
+	}
+
+	public void setRoom(String room) {
+		this.room = room;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -175,7 +196,8 @@ public class Task {
 				.append("[priority=").append(priority).append("][complexity=")
 				.append(complexity).append("]").append("[household=")
 				.append(household).append("]").append("[id=").append(id)
-				.append("]");
+				.append("]").append("[initial=").append(initial).append("]")
+				.append("[room=").append(room).append("]");
 		return builder.toString();
 	}
 

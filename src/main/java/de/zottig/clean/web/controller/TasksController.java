@@ -72,6 +72,17 @@ public class TasksController {
 	}
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
+	@RequestMapping(value = "task_patterns", method = RequestMethod.GET)
+	public ResponseEntity<?> get() {
+		List<Task> tasks = tasksService.getTaskPatterns();
+		List<TaskDto> taskDtos = new ArrayList<>();
+		for (Task task : tasks) {
+			taskDtos.add(convertToDto(task));
+		}
+		return new ResponseEntity<>(taskDtos, HttpStatus.OK);
+	}
+
+	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
 	@RequestMapping(value = "/tasks/task/{id}/submit", method = RequestMethod.POST)
 	public ResponseEntity<?> submitTask(@PathVariable Long id) {
 		Authentication authentication = SecurityContextHolder.getContext()

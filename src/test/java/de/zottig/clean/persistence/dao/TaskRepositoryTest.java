@@ -50,6 +50,8 @@ public class TaskRepositoryTest {
 		task1.setNextRun(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
 		task1.setPriority(1);
 		task1.setShedule("shedule1");
+		task1.setInitial(0);
+		task1.setRoom("room1");
 
 		entityManager.persistAndFlush(task1);
 
@@ -61,6 +63,8 @@ public class TaskRepositoryTest {
 		task2.setNextRun(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
 		task2.setPriority(2);
 		task2.setShedule("shedule2");
+		task2.setInitial(0);
+		task2.setRoom("room2");
 
 		entityManager.persistAndFlush(task2);
 
@@ -69,9 +73,11 @@ public class TaskRepositoryTest {
 		task3.setGroupname("group3");
 		task3.setHousehold(household2);
 		task3.setName("Task3");
-		task3.setNextRun(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
+		task3.setNextRun(LocalDateTime.now().minus(10, ChronoUnit.DAYS));
 		task3.setPriority(3);
 		task3.setShedule("shedule3");
+		task3.setInitial(1);
+		task3.setRoom("room3");
 
 		entityManager.persistAndFlush(task3);
 
@@ -80,9 +86,11 @@ public class TaskRepositoryTest {
 		task4.setGroupname("group4");
 		task4.setHousehold(household2);
 		task4.setName("Task4");
-		task4.setNextRun(LocalDateTime.now());
+		task4.setNextRun(LocalDateTime.now().minus(10, ChronoUnit.DAYS));
 		task4.setPriority(4);
 		task4.setShedule("shedule4");
+		task4.setInitial(1);
+		task4.setRoom("room4");
 
 		entityManager.persistAndFlush(task4);
 
@@ -91,9 +99,11 @@ public class TaskRepositoryTest {
 		task5.setGroupname("group5");
 		task5.setHousehold(household2);
 		task5.setName("Task5");
-		task5.setNextRun(LocalDateTime.now());
+		task5.setNextRun(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
 		task5.setPriority(5);
 		task5.setShedule("shedule5");
+		task5.setInitial(0);
+		task5.setRoom("room5");
 
 		entityManager.persistAndFlush(task5);
 
@@ -121,6 +131,8 @@ public class TaskRepositoryTest {
 		assertThat(found.get(0).getNextRun()).isEqualTo(task1.getNextRun());
 		assertThat(found.get(0).getPriority()).isEqualTo(task1.getPriority());
 		assertThat(found.get(0).getShedule()).isEqualTo(task1.getShedule());
+		assertThat(found.get(0).getInitial()).isEqualTo(task1.getInitial());
+		assertThat(found.get(0).getRoom()).isEqualTo(task1.getRoom());
 
 		assertThat(found.get(1).getComplexity())
 				.isEqualTo(task2.getComplexity());
@@ -135,6 +147,8 @@ public class TaskRepositoryTest {
 		assertThat(found.get(1).getNextRun()).isEqualTo(task2.getNextRun());
 		assertThat(found.get(1).getPriority()).isEqualTo(task2.getPriority());
 		assertThat(found.get(1).getShedule()).isEqualTo(task2.getShedule());
+		assertThat(found.get(1).getInitial()).isEqualTo(task2.getInitial());
+		assertThat(found.get(1).getRoom()).isEqualTo(task2.getRoom());
 	}
 
 	@Test
@@ -155,6 +169,8 @@ public class TaskRepositoryTest {
 		assertThat(found.getNextRun()).isEqualTo(task1.getNextRun());
 		assertThat(found.getPriority()).isEqualTo(task1.getPriority());
 		assertThat(found.getShedule()).isEqualTo(task1.getShedule());
+		assertThat(found.getInitial()).isEqualTo(task1.getInitial());
+		assertThat(found.getRoom()).isEqualTo(task1.getRoom());
 	}
 
 	@Test
@@ -163,37 +179,82 @@ public class TaskRepositoryTest {
 		// when
 		List<Task> found = taskRepository
 				.findCurrentByHouseholdIdAndNextRunBefore(
-						task5.getHousehold().getId(), LocalDateTime.now());
+						task3.getHousehold().getId(), LocalDateTime.now());
 
 		// then
 		assertThat(found.size()).isEqualTo(2);
 		assertThat(found.get(0).getComplexity())
-				.isEqualTo(task4.getComplexity());
+				.isEqualTo(task3.getComplexity());
 		assertThat(found.get(0).getDescription())
-				.isEqualTo(task4.getDescription());
-		assertThat(found.get(0).getGroupname()).isEqualTo(task4.getGroupname());
+				.isEqualTo(task3.getDescription());
+		assertThat(found.get(0).getGroupname()).isEqualTo(task3.getGroupname());
 		assertThat(found.get(0).getHousehold().getName())
-				.isEqualTo(task4.getHousehold().getName());
-		assertThat(found.get(0).getName()).isEqualTo(task4.getName());
-		assertThat(found.get(0).getId()).isEqualTo(task4.getId());
-		assertThat(found.get(0).getName()).isEqualTo(task4.getName());
-		assertThat(found.get(0).getNextRun()).isEqualTo(task4.getNextRun());
-		assertThat(found.get(0).getPriority()).isEqualTo(task4.getPriority());
-		assertThat(found.get(0).getShedule()).isEqualTo(task4.getShedule());
+				.isEqualTo(task3.getHousehold().getName());
+		assertThat(found.get(0).getName()).isEqualTo(task3.getName());
+		assertThat(found.get(0).getId()).isEqualTo(task3.getId());
+		assertThat(found.get(0).getName()).isEqualTo(task3.getName());
+		assertThat(found.get(0).getNextRun()).isEqualTo(task3.getNextRun());
+		assertThat(found.get(0).getPriority()).isEqualTo(task3.getPriority());
+		assertThat(found.get(0).getShedule()).isEqualTo(task3.getShedule());
+		assertThat(found.get(0).getInitial()).isEqualTo(task3.getInitial());
+		assertThat(found.get(0).getRoom()).isEqualTo(task3.getRoom());
 
 		assertThat(found.get(1).getComplexity())
-				.isEqualTo(task5.getComplexity());
+				.isEqualTo(task4.getComplexity());
 		assertThat(found.get(1).getDescription())
-				.isEqualTo(task5.getDescription());
-		assertThat(found.get(1).getGroupname()).isEqualTo(task5.getGroupname());
+				.isEqualTo(task4.getDescription());
+		assertThat(found.get(1).getGroupname()).isEqualTo(task4.getGroupname());
 		assertThat(found.get(1).getHousehold().getName())
-				.isEqualTo(task5.getHousehold().getName());
-		assertThat(found.get(1).getName()).isEqualTo(task5.getName());
-		assertThat(found.get(1).getId()).isEqualTo(task5.getId());
-		assertThat(found.get(1).getName()).isEqualTo(task5.getName());
-		assertThat(found.get(1).getNextRun()).isEqualTo(task5.getNextRun());
-		assertThat(found.get(1).getPriority()).isEqualTo(task5.getPriority());
-		assertThat(found.get(1).getShedule()).isEqualTo(task5.getShedule());
+				.isEqualTo(task4.getHousehold().getName());
+		assertThat(found.get(1).getName()).isEqualTo(task4.getName());
+		assertThat(found.get(1).getId()).isEqualTo(task4.getId());
+		assertThat(found.get(1).getName()).isEqualTo(task4.getName());
+		assertThat(found.get(1).getNextRun()).isEqualTo(task4.getNextRun());
+		assertThat(found.get(1).getPriority()).isEqualTo(task4.getPriority());
+		assertThat(found.get(1).getShedule()).isEqualTo(task4.getShedule());
+		assertThat(found.get(1).getInitial()).isEqualTo(task4.getInitial());
+		assertThat(found.get(1).getRoom()).isEqualTo(task4.getRoom());
+	}
+
+	@Test
+	public void whenFindAllByInitial_thenReturnTask() {
+
+		// when
+		List<Task> found = taskRepository.findAllByInitial(1);
+
+		// then
+		assertThat(found.size()).isEqualTo(2);
+		assertThat(found.get(0).getComplexity())
+				.isEqualTo(task3.getComplexity());
+		assertThat(found.get(0).getDescription())
+				.isEqualTo(task3.getDescription());
+		assertThat(found.get(0).getGroupname()).isEqualTo(task3.getGroupname());
+		assertThat(found.get(0).getHousehold().getName())
+				.isEqualTo(task3.getHousehold().getName());
+		assertThat(found.get(0).getName()).isEqualTo(task3.getName());
+		assertThat(found.get(0).getId()).isEqualTo(task3.getId());
+		assertThat(found.get(0).getName()).isEqualTo(task3.getName());
+		assertThat(found.get(0).getNextRun()).isEqualTo(task3.getNextRun());
+		assertThat(found.get(0).getPriority()).isEqualTo(task3.getPriority());
+		assertThat(found.get(0).getShedule()).isEqualTo(task3.getShedule());
+		assertThat(found.get(0).getInitial()).isEqualTo(task3.getInitial());
+		assertThat(found.get(0).getRoom()).isEqualTo(task3.getRoom());
+
+		assertThat(found.get(1).getComplexity())
+				.isEqualTo(task4.getComplexity());
+		assertThat(found.get(1).getDescription())
+				.isEqualTo(task4.getDescription());
+		assertThat(found.get(1).getGroupname()).isEqualTo(task4.getGroupname());
+		assertThat(found.get(1).getHousehold().getName())
+				.isEqualTo(task4.getHousehold().getName());
+		assertThat(found.get(1).getName()).isEqualTo(task4.getName());
+		assertThat(found.get(1).getId()).isEqualTo(task4.getId());
+		assertThat(found.get(1).getName()).isEqualTo(task4.getName());
+		assertThat(found.get(1).getNextRun()).isEqualTo(task4.getNextRun());
+		assertThat(found.get(1).getPriority()).isEqualTo(task4.getPriority());
+		assertThat(found.get(1).getShedule()).isEqualTo(task4.getShedule());
+		assertThat(found.get(1).getInitial()).isEqualTo(task4.getInitial());
+		assertThat(found.get(1).getRoom()).isEqualTo(task4.getRoom());
 	}
 
 }
