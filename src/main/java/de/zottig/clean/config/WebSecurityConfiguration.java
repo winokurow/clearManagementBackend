@@ -20,10 +20,10 @@ import com.google.common.collect.ImmutableList;
 
 import de.zottig.clean.service.CustomUserDetailsService;
 
-@Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+//@Configuration
+//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 // @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableWebSecurity
+//@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
