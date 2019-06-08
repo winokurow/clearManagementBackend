@@ -29,7 +29,7 @@ public class OAuth2ServerConfiguration {
 	@EnableResourceServer
 	protected static class ResourceServerConfiguration
 			extends
-				ResourceServerConfigurerAdapter {
+				ResourceServerConfigurerAdapter { 
 
 		@Override
 		public void configure(ResourceServerSecurityConfigurer resources) {

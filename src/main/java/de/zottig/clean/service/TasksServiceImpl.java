@@ -1,6 +1,7 @@
 package de.zottig.clean.service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class TasksServiceImpl implements ITasksService {
 		Member member = memberService.findUserByEmail(email);
 		if (isOnlyCurrent) {
 			return repository.findCurrentByHouseholdIdAndNextRunBefore(
-					member.getHousehold().getId(), LocalDateTime.now());
+					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)));
 		} else {
 			return repository.findByHouseholdId(member.getHousehold().getId());
 		}
@@ -128,7 +129,7 @@ public class TasksServiceImpl implements ITasksService {
 	 */
 	@Override
 	public void deleteTask(long id) {
-		repository.delete(id);
+		repository.deleteById(id);
 	}
 
 }

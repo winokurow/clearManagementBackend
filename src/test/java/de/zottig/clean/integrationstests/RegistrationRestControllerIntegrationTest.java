@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,12 +32,12 @@ import de.zottig.clean.persistence.model.User;
 import de.zottig.clean.web.dto.GroupDto;
 import de.zottig.clean.web.dto.HouseholdDto;
 
-@RunWith(SpringRunner.class)
+/*@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = CleanApplication.class)
 @AutoConfigureMockMvc
 @TestPropertySource("classpath:persistence-test.properties")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("prod")
+@ActiveProfiles("prod")*/
 public class RegistrationRestControllerIntegrationTest {
 
 	@Autowired
@@ -50,8 +52,9 @@ public class RegistrationRestControllerIntegrationTest {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Test
-	public void whenPutHousehold_thenCreateHousehold() throws Exception {
+	
+//	@Test
+//	public void whenPutHousehold_thenCreateHousehold() throws Exception {
 //		GroupDto member1 = new GroupDto();
 //		member1.setFirstname("firstname1");
 //		member1.setLastname("lastname1");
@@ -118,7 +121,7 @@ public class RegistrationRestControllerIntegrationTest {
 //		assertThat(user.getPassword()).isNotNull();
 //		//assertThat(user.getRoles().size()).isEqualTo(1);
 //		//assertThat(user.getRoles().get(0).getName()).isEqualTo("ROLE_USER");
-	}
+//	}
 
 	private Household convertToEntity(HouseholdDto householdDto) {
 		ModelMapper modelMapper = new ModelMapper();

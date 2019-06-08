@@ -2,6 +2,7 @@ package de.zottig.clean.persistence.dao;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,7 +13,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	List<Task> findByHouseholdId(Long long1);
 
 	@Override
-	Task findOne(Long long1);
+	Optional<Task> findById(Long long1);
 
 	List<Task> findCurrentByHouseholdIdAndNextRunBefore(Long long1,
 			LocalDateTime localDateTime);

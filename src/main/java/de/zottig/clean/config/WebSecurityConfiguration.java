@@ -1,12 +1,14 @@
 package de.zottig.clean.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,10 +22,9 @@ import com.google.common.collect.ImmutableList;
 
 import de.zottig.clean.service.CustomUserDetailsService;
 
-//@Configuration
-//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-// @EnableGlobalMethodSecurity(prePostEnabled = true)
-//@EnableWebSecurity
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -60,6 +61,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		configuration.setAllowedOrigins(ImmutableList.of("*"));
 		configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST",
 				"PUT", "DELETE", "PATCH", "OPTIONS"));
+		List<String> headers = new ArrayList<>();
+		headers.add("Origin");
+		headers.add("Content-Type");
+		headers.add("x-requested-with");
+		headers.add("authorization");
+		configuration.setAllowedHeaders(headers);
+		configuration.setExposedHeaders(headers);
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;

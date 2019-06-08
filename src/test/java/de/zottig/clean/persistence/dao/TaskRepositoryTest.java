@@ -155,7 +155,7 @@ public class TaskRepositoryTest {
 	public void whenFindOne_thenReturnTask() {
 
 		// when
-		Task found = taskRepository.findOne(task1.getId());
+		Task found = taskRepository.findById(task1.getId()).orElse(null);
 
 		// then
 		assertThat(found.getComplexity()).isEqualTo(task1.getComplexity());
