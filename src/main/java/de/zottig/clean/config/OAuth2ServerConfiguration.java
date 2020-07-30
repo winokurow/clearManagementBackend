@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +21,6 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 
 import de.zottig.clean.service.CustomUserDetailsService;
 @Configuration
-@Order(2)
 public class OAuth2ServerConfiguration {
 
 	private static final String RESOURCE_ID = "restservice";
