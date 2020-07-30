@@ -22,7 +22,7 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 
 import de.zottig.clean.service.CustomUserDetailsService;
 @Configuration
-@Order(3)
+@Order(2)
 public class OAuth2ServerConfiguration {
 
 	private static final String RESOURCE_ID = "restservice";

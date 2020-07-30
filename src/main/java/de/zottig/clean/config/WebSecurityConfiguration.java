@@ -26,7 +26,7 @@ import de.zottig.clean.service.CustomUserDetailsService;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
-@Order(2)
+@Order(3)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
