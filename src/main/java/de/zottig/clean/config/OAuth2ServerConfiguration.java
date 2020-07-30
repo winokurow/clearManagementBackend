@@ -80,7 +80,7 @@ public class OAuth2ServerConfiguration {
 			clients.inMemory().withClient("clientapp")
 					.authorizedGrantTypes("password", "refresh_token")
 					.authorities("USER").scopes("read", "write", "tasks")
-					.resourceIds(RESOURCE_ID).secret("123456");
+					.resourceIds(RESOURCE_ID).secret("{bcrypt}123456");
 		}
 
 		@Bean
