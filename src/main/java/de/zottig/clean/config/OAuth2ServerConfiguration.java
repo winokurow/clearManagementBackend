@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -26,13 +25,12 @@ public class OAuth2ServerConfiguration {
 
 	private static final String RESOURCE_ID = "restservice";
 
-	
 	@Configuration
 	@EnableResourceServer
 	protected static class ResourceServerConfiguration
 			extends
 				ResourceServerConfigurerAdapter { 
-		
+
 		@Override
 		public void configure(ResourceServerSecurityConfigurer resources) {
 			resources.resourceId(RESOURCE_ID);
@@ -55,9 +53,6 @@ public class OAuth2ServerConfiguration {
 			extends
 				AuthorizationServerConfigurerAdapter {
 
-		@Autowired
-		private PasswordEncoder passwordEncoder;
-		
 		private TokenStore tokenStore = new InMemoryTokenStore();
 
 		@Autowired
@@ -80,11 +75,10 @@ public class OAuth2ServerConfiguration {
 		@Override
 		public void configure(ClientDetailsServiceConfigurer clients)
 				throws Exception {
-
 			clients.inMemory().withClient("clientapp")
 					.authorizedGrantTypes("password", "refresh_token")
 					.authorities("USER").scopes("read", "write", "tasks")
-					.resourceIds(RESOURCE_ID).secret(passwordEncoder.encode("123456"));
+					.resourceIds(RESOURCE_ID).secret("123456");
 		}
 
 		@Bean
