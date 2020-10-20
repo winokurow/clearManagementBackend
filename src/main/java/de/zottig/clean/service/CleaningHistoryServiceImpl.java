@@ -1,5 +1,8 @@
 package de.zottig.clean.service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,17 +37,16 @@ public class CleaningHistoryServiceImpl implements ICleaningHistoryService {
 		return history;
 	}
 
-	/**
-	 * Get history list for member
-	 * 
-	 * @param email
-	 *            - user email
-	 * @return history list
-	 */
 	@Override
-	public List<CleaningHistory> getMemberHistory(String email) {
+	public List<CleaningHistory> getMemberHistory(String email, LocalDateTime dateFrom, LocalDateTime dateTo) {
 		Member member = memberService.findUserByEmail(email);
-		return repository.findByMemberId(member.getId());
+		if (dateTo == null) {
+			dateTo = LocalDateTime.now(); 
+		}
+		if (dateFrom == null) {
+			dateFrom = LocalDateTime.now().with(ChronoField.NANO_OF_DAY, LocalTime.MIN.toNanoOfDay());
+		}
+		return repository.findByMemberIdAndTimestampBetween(member.getId(), dateFrom, dateTo);
 	}
 
 	/**
@@ -60,9 +62,18 @@ public class CleaningHistoryServiceImpl implements ICleaningHistoryService {
 				.getId();
 		List<Member> members = memberService
 				.getMembersByHouseholdId(householdId);
+		LocalDateTime dateTo = null;
+		LocalDateTime dateFrom = null;
+		if (dateTo == null) {
+			dateTo = LocalDateTime.now(); 
+		}
+		if (dateFrom == null) {
+			dateFrom = LocalDateTime.now().with(ChronoField.NANO_OF_DAY, LocalTime.MIN.toNanoOfDay());
+		}
+		
 		List<CleaningHistory> history = new ArrayList<>();
 		for (Member member : members) {
-			history.addAll(repository.findByMemberId(member.getId()));
+			history.addAll(repository.findByMemberIdAndTimestampBetween(member.getId(), dateFrom, dateTo));
 		}
 		return history;
 	}

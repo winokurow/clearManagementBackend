@@ -1,6 +1,7 @@
 package de.zottig.clean.web.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.zottig.clean.persistence.model.CleaningHistory;
@@ -34,14 +37,16 @@ public class HistoryController {
 	private ICleaningHistoryService cleaningHistoryService;
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
-	@RequestMapping(value = "member_history", method = RequestMethod.GET)
-	public ResponseEntity<?> getMemberHistory() {
+	@GetMapping(value = "member_history")
+	public ResponseEntity<?> getMemberHistory(
+			@RequestParam("dateFrom") LocalDateTime dateFrom,
+			@RequestParam("dateFrom") LocalDateTime dateTo) {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String email = authentication.getName();
 
 		List<CleaningHistory> cleaningHistoryList = cleaningHistoryService
-				.getMemberHistory(email);
+				.getMemberHistory(email, dateFrom, dateTo);
 		List<CleaningHistoryDto> cleaningHistoryDtos = new ArrayList<>();
 		for (CleaningHistory cleaningHistory : cleaningHistoryList) {
 			cleaningHistoryDtos.add(convertToDto(cleaningHistory));

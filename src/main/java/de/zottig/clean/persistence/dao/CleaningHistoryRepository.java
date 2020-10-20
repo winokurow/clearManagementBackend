@@ -1,5 +1,6 @@
 package de.zottig.clean.persistence.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,5 @@ public interface CleaningHistoryRepository
 		extends
 			JpaRepository<CleaningHistory, Long> {
 
-	List<CleaningHistory> findByMemberId(Long long1);
+	List<CleaningHistory> findByMemberIdAndTimestampBetween(Long memberId, LocalDateTime dateFrom, LocalDateTime dateTo);
 }

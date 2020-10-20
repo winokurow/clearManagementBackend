@@ -3,6 +3,8 @@ package de.zottig.clean.persistence.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,17 +60,22 @@ public class CleaningHistoryRepositoryTest {
 		cleaningHistory2.setComplexity(2);
 		cleaningHistory2.setMember(member);
 		cleaningHistory2.setTaskname("clean2");
-		cleaningHistory2.setTimestamp(LocalDateTime.now());
+		cleaningHistory2.setTimestamp(LocalDateTime.now().minusDays(2));
 
 		entityManager.persistAndFlush(cleaningHistory1);
 		entityManager.persistAndFlush(cleaningHistory2);
 		entityManager.flush();
 
 		// when
+		LocalDateTime dateTo = LocalDateTime.now();
+		LocalDateTime dateFrom = LocalDateTime.now()
+				.with(ChronoField.NANO_OF_DAY, LocalTime.MIN.toNanoOfDay());
 		List<CleaningHistory> found = cleaningHistoryRepository
-				.findByMemberId(cleaningHistory1.getMember().getId());
-
+				.findByMemberIdAndTimestampBetween(
+						cleaningHistory1.getMember().getId(), dateFrom, dateTo);
 		// then
+		assertThat(found.size()).isEqualTo(1);
+
 		assertThat(found.get(0).getAction())
 				.isEqualTo(cleaningHistory1.getAction());
 		assertThat(found.get(0).getComplexity())
@@ -79,17 +86,6 @@ public class CleaningHistoryRepositoryTest {
 				.isEqualTo(cleaningHistory1.getTaskname());
 		assertThat(found.get(0).getTimestamp())
 				.isEqualTo(cleaningHistory1.getTimestamp());
-
-		assertThat(found.get(1).getAction())
-				.isEqualTo(cleaningHistory2.getAction());
-		assertThat(found.get(1).getComplexity())
-				.isEqualTo(cleaningHistory2.getComplexity());
-		assertThat(found.get(1).getMember().getFirstName())
-				.isEqualTo(cleaningHistory2.getMember().getFirstName());
-		assertThat(found.get(1).getTaskname())
-				.isEqualTo(cleaningHistory2.getTaskname());
-		assertThat(found.get(1).getTimestamp())
-				.isEqualTo(cleaningHistory2.getTimestamp());
 
 	}
 
