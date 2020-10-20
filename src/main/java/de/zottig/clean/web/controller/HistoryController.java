@@ -39,8 +39,8 @@ public class HistoryController {
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
 	@GetMapping(value = "member_history")
 	public ResponseEntity<?> getMemberHistory(
-			@RequestParam("dateFrom") LocalDateTime dateFrom,
-			@RequestParam("dateFrom") LocalDateTime dateTo) {
+			@RequestParam(name = "dateFrom", required = false) LocalDateTime dateFrom,
+			@RequestParam(name = "dateFrom", required = false) LocalDateTime dateTo) {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String email = authentication.getName();
