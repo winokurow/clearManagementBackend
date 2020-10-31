@@ -40,6 +40,7 @@ public class CleaningHistoryServiceImpl implements ICleaningHistoryService {
 	@Override
 	public List<CleaningHistory> getMemberHistory(String email, LocalDateTime dateFrom, LocalDateTime dateTo) {
 		Member member = memberService.findUserByEmail(email);
+		System.out.println("dateTo" + dateTo + "dateFrom" + dateFrom);
 		if (dateTo == null) {
 			dateTo = LocalDateTime.now(); 
 		}
