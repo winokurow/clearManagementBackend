@@ -6,6 +6,8 @@ import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ public class CleaningHistoryServiceImpl implements ICleaningHistoryService {
 	@Autowired
 	private IMemberService memberService;
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	/**
 	 * Submit history
 	 * 
@@ -40,7 +43,9 @@ public class CleaningHistoryServiceImpl implements ICleaningHistoryService {
 	@Override
 	public List<CleaningHistory> getMemberHistory(String email, LocalDateTime dateFrom, LocalDateTime dateTo) {
 		Member member = memberService.findUserByEmail(email);
-		System.out.println("dateTo" + dateTo + "dateFrom" + dateFrom);
+		
+		logger.debug("dateTo" + dateTo + "dateFrom" + dateFrom);
+
 		if (dateTo == null) {
 			dateTo = LocalDateTime.now(); 
 		}
