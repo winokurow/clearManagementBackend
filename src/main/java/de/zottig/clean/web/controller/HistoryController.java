@@ -40,7 +40,7 @@ public class HistoryController {
 	@GetMapping(value = "member_history")
 	public ResponseEntity<?> getMemberHistory(
 			@RequestParam(name = "dateFrom", required = false) LocalDateTime dateFrom,
-			@RequestParam(name = "dateFrom", required = false) LocalDateTime dateTo) {
+			@RequestParam(name = "dateTo", required = false) LocalDateTime dateTo) {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String email = authentication.getName();
