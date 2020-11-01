@@ -21,11 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.zottig.clean.persistence.model.CleaningHistory;
-import de.zottig.clean.persistence.model.Role;
-import de.zottig.clean.persistence.model.User;
 import de.zottig.clean.service.ICleaningHistoryService;
 import de.zottig.clean.web.dto.CleaningHistoryDto;
-import de.zottig.clean.web.util.GenericResponse;
 
 @RestController
 @RequestMapping("api")
@@ -62,17 +59,6 @@ public class HistoryController {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String email = authentication.getName();
-
-		User activeUser = (User) ((Authentication) principal).getPrincipal();
-		List<Role> roles = activeUser.getRoles();
-		Role admin = roles.stream()
-				.filter(role -> "ROLE_ADMIN".equals(role.getName())).findAny()
-				.orElse(null);
-
-		if (admin == null) {
-			GenericResponse response = new GenericResponse("Member not found");
-			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-		}
 
 		List<CleaningHistory> cleaningHistoryList = cleaningHistoryService
 				.getHouseholdHistory(email, dateFrom, dateTo);
