@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,8 +55,10 @@ public class HistoryController {
 	}
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
-	@RequestMapping(value = "household_history", method = RequestMethod.GET)
-	public ResponseEntity<?> getHouseholdHistory(Principal principal) {
+	@GetMapping(value = "household_history")
+	public ResponseEntity<?> getHouseholdHistory(Principal principal,
+			@RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+			@RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo) {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String email = authentication.getName();
@@ -74,7 +75,7 @@ public class HistoryController {
 		}
 
 		List<CleaningHistory> cleaningHistoryList = cleaningHistoryService
-				.getHouseholdHistory(email);
+				.getHouseholdHistory(email, dateFrom, dateTo);
 		List<CleaningHistoryDto> cleaningHistoryDtos = new ArrayList<>();
 		for (CleaningHistory cleaningHistory : cleaningHistoryList) {
 			cleaningHistoryDtos.add(convertToDto(cleaningHistory));

@@ -66,7 +66,6 @@ public class TasksServiceImpl implements ITasksService {
 	 */
 	@Override
 	public Task submitTask(Task task, Member member) {
-		System.out.println(task.getShedule());
 		Period duration = Period.parse(task.getShedule());
 		LocalDateTime now = LocalDateTime.now();
 		now = now.plus(duration);
