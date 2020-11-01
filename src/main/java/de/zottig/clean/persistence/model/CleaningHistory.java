@@ -24,7 +24,7 @@ public class CleaningHistory {
 	@Column(unique = true, nullable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-
+	
 	@NotNull
 	private String taskname;
 

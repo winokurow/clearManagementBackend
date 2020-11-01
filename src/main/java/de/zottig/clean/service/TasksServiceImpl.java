@@ -74,7 +74,7 @@ public class TasksServiceImpl implements ITasksService {
 		task = repository.save(task);
 
 		CleaningHistory history = new CleaningHistory();
-		history.setTaskname(task.getName());
+		history.setTaskname(task.getGroupname() + ". " + task.getName());
 		history.setTimestamp(LocalDateTime.now());
 		history.setAction("SUBMIT");
 		history.setComplexity(task.getComplexity());
