@@ -43,8 +43,6 @@ public class CleaningHistoryServiceImpl implements ICleaningHistoryService {
 	@Override
 	public List<CleaningHistory> getMemberHistory(String email, LocalDateTime dateFrom, LocalDateTime dateTo) {
 		Member member = memberService.findUserByEmail(email);
-		
-		logger.debug("dateTo" + dateTo + "dateFrom" + dateFrom);
 
 		if (dateTo == null) {
 			dateTo = LocalDateTime.now(); 
@@ -63,13 +61,12 @@ public class CleaningHistoryServiceImpl implements ICleaningHistoryService {
 	 * @return history list
 	 */
 	@Override
-	public List<CleaningHistory> getHouseholdHistory(String email) {
+	public List<CleaningHistory> getHouseholdHistory(String email, LocalDateTime dateFrom, LocalDateTime dateTo) {
 		Long householdId = memberService.findUserByEmail(email).getHousehold()
 				.getId();
 		List<Member> members = memberService
 				.getMembersByHouseholdId(householdId);
-		LocalDateTime dateTo = null;
-		LocalDateTime dateFrom = null;
+
 		if (dateTo == null) {
 			dateTo = LocalDateTime.now(); 
 		}
