@@ -22,4 +22,6 @@ public interface IMemberService {
 	boolean emailExist(String email);
 
 	public List<Member> getMembersByHouseholdId(Long householdId);
+
+	Member findUserById(int memberId);
 }

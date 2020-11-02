@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +32,7 @@ import de.zottig.clean.service.CustomUserDetailsService;
 import de.zottig.clean.service.IHouseholdService;
 import de.zottig.clean.service.IMemberService;
 import de.zottig.clean.service.ITasksService;
+import de.zottig.clean.web.dto.AssignRandomTasksDto;
 import de.zottig.clean.web.dto.ErrorDto;
 import de.zottig.clean.web.dto.TaskDto;
 import de.zottig.clean.web.util.GenericResponse;
@@ -206,6 +208,27 @@ public class TasksController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
+	@PostMapping(value = "/tasks/asignrandomtasks")
+	public ResponseEntity<?> asignRandomTasks(Principal principal,
+			@Validated @RequestBody final AssignRandomTasksDto assignRandomTasksDto) {
+
+		User activeUser = (User) ((Authentication) principal).getPrincipal();
+		List<Role> roles = activeUser.getRoles();
+		Role admin = roles.stream()
+				.filter(role -> "ROLE_ADMIN".equals(role.getName())).findAny()
+				.orElse(null);
+
+		if (admin == null) {
+			GenericResponse response = new GenericResponse("Permission denied");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+		}
+
+		tasksService.assignTasks(assignRandomTasksDto.getMember(), assignRandomTasksDto.getCount());
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	
 	private TaskDto convertToDto(Task task) {
 		ModelMapper modelMapper = new ModelMapper();
 		return modelMapper.map(task, TaskDto.class);

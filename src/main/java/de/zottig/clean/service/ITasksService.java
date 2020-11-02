@@ -20,4 +20,6 @@ public interface ITasksService {
 	public Task updateTask(Task task);
 
 	public Task insertTask(Task task);
+	
+	public void assignTasks(int member, int count);
 }

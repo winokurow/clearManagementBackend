@@ -55,6 +55,11 @@ public class MemberServiceImpl implements IMemberService {
 	}
 
 	@Override
+	public Member findUserById(final int mitarbeiterId) {
+		return repository.findOneById(mitarbeiterId);
+	}
+	
+	@Override
 	public void changeUserPassword(final Member user, final String password) {
 		// user.setPassword(passwordEncoder.encode(password));
 		repository.save(user);
