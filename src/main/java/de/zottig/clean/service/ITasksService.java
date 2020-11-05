@@ -7,7 +7,7 @@ import de.zottig.clean.persistence.model.Task;
 
 public interface ITasksService {
 
-	public List<Task> getTasks(String email, boolean isOnlyCurrent);
+	public List<Task> getTasks(String email, boolean isOnlyCurrent, boolean showOnlyAssignedToMe);
 
 	public List<Task> getTaskPatterns();
 
@@ -21,5 +21,5 @@ public interface ITasksService {
 
 	public Task insertTask(Task task);
 	
-	public void assignTasks(int member, int count);
+	public void assignTasks(int member, int minimalTotalComplexity);
 }

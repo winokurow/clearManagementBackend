@@ -11,6 +11,6 @@ public class AssignRandomTasksDto {
 	private int member;
 
 	@NotNull
-	private int count;
+	private int minimalTotalComplexity;
 
 }

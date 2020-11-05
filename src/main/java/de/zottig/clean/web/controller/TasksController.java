@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,13 +60,17 @@ public class TasksController {
 	}
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
-	@RequestMapping(value = "tasks", method = RequestMethod.GET)
+	@GetMapping(value = "tasks")
 	public ResponseEntity<?> get(
-			@RequestParam("show_only_current") boolean showOnlyCurrent) {
+			@RequestParam("show_only_current") boolean showOnlyCurrent,
+			@RequestParam(name="show_only_assigned_to_me", required = false) Boolean showOnlyAssignedToMe) {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 		String email = authentication.getName();
-		List<Task> tasks = tasksService.getTasks(email, showOnlyCurrent);
+		if (showOnlyAssignedToMe == null) {
+			showOnlyAssignedToMe = false;
+		}
+		List<Task> tasks = tasksService.getTasks(email, showOnlyCurrent, showOnlyAssignedToMe);
 		List<TaskDto> taskDtos = new ArrayList<>();
 		for (Task task : tasks) {
 			taskDtos.add(convertToDto(task));
@@ -74,7 +79,7 @@ public class TasksController {
 	}
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
-	@RequestMapping(value = "task_patterns", method = RequestMethod.GET)
+	@GetMapping(value = "task_patterns")
 	public ResponseEntity<?> get() {
 		List<Task> tasks = tasksService.getTaskPatterns();
 		List<TaskDto> taskDtos = new ArrayList<>();
@@ -223,8 +228,22 @@ public class TasksController {
 			GenericResponse response = new GenericResponse("Permission denied");
 			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
-
-		tasksService.assignTasks(assignRandomTasksDto.getMember(), assignRandomTasksDto.getCount());
+		Member actuellMember = memberService.findUserByEmail(activeUser.getEmail());
+		List<Member> members = memberService.getMembersByHouseholdId(actuellMember.getHousehold().getId());
+		boolean isFound = false;
+		for (Member member : members) {
+			if (member.getId().equals(actuellMember.getId())) {
+				isFound = true;
+				break;
+			}
+		}
+		
+		if (!isFound) {
+			GenericResponse response = new GenericResponse("Permission denied");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+		}
+		
+		tasksService.assignTasks(assignRandomTasksDto.getMember(), assignRandomTasksDto.getMinimalTotalComplexity());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

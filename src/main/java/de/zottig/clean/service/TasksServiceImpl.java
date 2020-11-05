@@ -30,6 +30,9 @@ public class TasksServiceImpl implements ITasksService {
 	@Autowired
 	private ICleaningHistoryService historyService;
 
+	 
+	private Random rand = new Random();
+	
 	/**
 	 * Get tasks list for household
 	 * 
@@ -37,13 +40,20 @@ public class TasksServiceImpl implements ITasksService {
 	 *            - user email
 	 * @param isOnlyCurrent
 	 *            - if only current tasks would be searched
+	 * @param assignedTo
+	 *            - assigned To
 	 */
 	@Override
-	public List<Task> getTasks(String email, boolean isOnlyCurrent) {
+	public List<Task> getTasks(String email, boolean isOnlyCurrent, boolean showOnlyAssignedToMe) {
 		Member member = memberService.findUserByEmail(email);
 		if (isOnlyCurrent) {
+			if (!showOnlyAssignedToMe) {
 			return repository.findCurrentByHouseholdIdAndNextRunBefore(
 					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)));
+			} else {
+				return repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
+						member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), member.getId());
+			}
 		} else {
 			return repository.findByHouseholdId(member.getHousehold().getId());
 		}
@@ -91,26 +101,28 @@ public class TasksServiceImpl implements ITasksService {
 	/**
 	 * Assign random tasks to member
 	 * 
-	 * @param count
-	 *            - how many tasks
+	 * @param minimalTotalComplexity
+	 *            - minimal total complexity
 	 */
 	@Override
-	public void assignTasks(int memberId, int count) {
+	public void assignTasks(int memberId, int minimalTotalComplexity) {
+
 		Member member = memberService.findUserById(memberId);
-		List<Task> tasks = repository.findCurrentByHouseholdIdAndNextRunBefore(
-					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)));
+		List<Task> tasks = repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
+					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), null);
 		List<Long> weigtedList = new ArrayList<>();
 		for (Task task : tasks) {
-			for (int i = 0; i < 6-task.getComplexity(); i++) {
+			for (int i = 0; i < 6 - task.getComplexity(); i++) {
 				weigtedList.add(task.getId());
 			}
 		}
-		Random rand = new Random();
-		for (int i = 0; i < count; i++) {
+
+		while (minimalTotalComplexity > 0) {
 			int position = rand.nextInt(weigtedList.size());
 			Task task = this.getTaskById(weigtedList.get(position));
 			task.setAssignedTo(member);
 			weigtedList.removeIf(n -> Objects.equals(n, weigtedList.get(position)));
+			minimalTotalComplexity -= task.getComplexity();
 		}
 	}
 	
