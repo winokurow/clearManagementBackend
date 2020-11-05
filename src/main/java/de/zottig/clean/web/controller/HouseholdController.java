@@ -29,7 +29,7 @@ public class HouseholdController {
 	private IMemberService memberService;
 
 	@PreAuthorize("#oauth2.hasScope('tasks') and #oauth2.hasScope('read')")
-	@GetMapping(value = "member_history")
+	@GetMapping(value = "household/members")
 	public ResponseEntity<?> getMembers() {
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
