@@ -55,7 +55,7 @@ public class MemberServiceImpl implements IMemberService {
 	}
 
 	@Override
-	public Member findUserById(final int mitarbeiterId) {
+	public Member findUserById(final Long mitarbeiterId) {
 		return repository.findOneById(mitarbeiterId);
 	}
 	

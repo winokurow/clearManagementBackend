@@ -21,5 +21,5 @@ public interface ITasksService {
 
 	public Task insertTask(Task task);
 	
-	public void assignTasks(int member, int minimalTotalComplexity);
+	public void assignTasks(long member, int minimalTotalComplexity);
 }

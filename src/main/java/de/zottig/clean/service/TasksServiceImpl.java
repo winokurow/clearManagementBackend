@@ -105,7 +105,7 @@ public class TasksServiceImpl implements ITasksService {
 	 *            - minimal total complexity
 	 */
 	@Override
-	public void assignTasks(int memberId, int minimalTotalComplexity) {
+	public void assignTasks(long memberId, int minimalTotalComplexity) {
 
 		Member member = memberService.findUserById(memberId);
 		List<Task> tasks = repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(

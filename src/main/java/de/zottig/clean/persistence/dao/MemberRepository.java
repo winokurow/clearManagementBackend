@@ -9,6 +9,6 @@ import de.zottig.clean.persistence.model.Member;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	Member findOneByEmail(String email);
-	Member findOneById(int id);
+	Member findOneById(Long id);
 	List<Member> findByHouseholdId(Long long1);
 }

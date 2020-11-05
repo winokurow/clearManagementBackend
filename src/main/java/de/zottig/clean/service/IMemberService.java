@@ -23,5 +23,5 @@ public interface IMemberService {
 
 	public List<Member> getMembersByHouseholdId(Long householdId);
 
-	Member findUserById(int memberId);
+	Member findUserById(Long memberId);
 }
