@@ -57,6 +57,7 @@ public class Task {
 
 	private String room;
 
+	@ManyToOne(cascade = CascadeType.ALL, targetEntity = Member.class)
 	@JoinColumn(name = "assignedTo")
 	private Member assignedTo;
 	
