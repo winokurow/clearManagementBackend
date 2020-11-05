@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import de.zottig.clean.persistence.LocalDateTimeConverter;
@@ -58,7 +57,6 @@ public class Task {
 
 	private String room;
 
-	@OneToMany(cascade = CascadeType.ALL, targetEntity = Member.class)
 	@JoinColumn(name = "assignedTo")
 	private Member assignedTo;
 	
