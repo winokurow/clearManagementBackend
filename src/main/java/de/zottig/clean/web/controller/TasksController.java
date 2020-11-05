@@ -250,7 +250,10 @@ public class TasksController {
 	
 	private TaskDto convertToDto(Task task) {
 		ModelMapper modelMapper = new ModelMapper();
+		TaskDto taskDto = modelMapper.map(task, TaskDto.class);
+		taskDto.setAssignedTo(task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName());
 		return modelMapper.map(task, TaskDto.class);
+		
 	}
 
 	private Task convertToEntity(TaskDto taskDto) {
