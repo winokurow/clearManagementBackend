@@ -52,7 +52,7 @@ public class TasksServiceImpl implements ITasksService {
 					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)));
 			} else {
 				return repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
-						member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), member.getId());
+						member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), member);
 			}
 		} else {
 			return repository.findByHouseholdId(member.getHousehold().getId());

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import de.zottig.clean.persistence.model.Member;
 import de.zottig.clean.persistence.model.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -19,7 +20,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 			LocalDateTime localDateTime);
 	
 	List<Task> findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(Long long1,
-			LocalDateTime localDateTime, Long assignedTo);
+			LocalDateTime localDateTime, Member assignedTo);
 
 	List<Task> findAllByInitial(int i);
 }
