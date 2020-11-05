@@ -40,7 +40,7 @@ public class TaskDto {
 
 	private String room;
 
-	private String assignedTo;
+	private String assigned;
 	
 	
 }

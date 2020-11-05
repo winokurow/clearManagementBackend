@@ -252,7 +252,7 @@ public class TasksController {
 		ModelMapper modelMapper = new ModelMapper();
 		TaskDto taskDto = modelMapper.map(task, TaskDto.class);
 		if (task.getAssignedTo() != null) {
-			taskDto.setAssignedTo(task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName());
+			taskDto.setAssigned(task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName());
 		}
 		return modelMapper.map(task, TaskDto.class);
 		
