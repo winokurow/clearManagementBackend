@@ -254,7 +254,7 @@ public class TasksController {
 		if (task.getAssignedTo() != null) {
 			taskDto.setAssigned(task.getAssignedTo().getFirstName() + " " + task.getAssignedTo().getLastName());
 		}
-		return modelMapper.map(task, TaskDto.class);
+		return taskDto;
 		
 	}
 
