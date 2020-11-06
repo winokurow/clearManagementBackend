@@ -112,7 +112,7 @@ public class TasksServiceImpl implements ITasksService {
 					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), null);
 		List<Long> weigtedList = new ArrayList<>();
 		for (Task task : tasks) {
-			for (int i = 0; i < 6 - task.getComplexity(); i++) {
+			for (int i = 0; i < 7 - task.getComplexity(); i++) {
 				weigtedList.add(task.getId());
 			}
 		}
