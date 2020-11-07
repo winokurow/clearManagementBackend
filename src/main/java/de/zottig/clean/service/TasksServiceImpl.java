@@ -111,6 +111,7 @@ public class TasksServiceImpl implements ITasksService {
 	public void assignTasks(long memberId, int minimalTotalComplexity) {
 
 		Member member = memberService.findUserById(memberId);
+		LOGGER.debug("memberId" + member.toString());
 		LOGGER.debug("member.getHousehold().getId()" + member.getHousehold().getId());
 		LOGGER.debug("LocalDateTime.now().with(LocalTime.of(23, 0))" + LocalDateTime.now().with(LocalTime.of(23, 0)));
 		List<Task> tasks = repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
