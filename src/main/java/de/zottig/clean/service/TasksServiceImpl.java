@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +32,8 @@ public class TasksServiceImpl implements ITasksService {
 	@Autowired
 	private ICleaningHistoryService historyService;
 
-	 
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	
 	private Random rand = new Random();
 	
 	/**
@@ -108,6 +111,8 @@ public class TasksServiceImpl implements ITasksService {
 	public void assignTasks(long memberId, int minimalTotalComplexity) {
 
 		Member member = memberService.findUserById(memberId);
+		LOGGER.debug("member.getHousehold().getId()" + member.getHousehold().getId());
+		LOGGER.debug("LocalDateTime.now().with(LocalTime.of(23, 0))" + LocalDateTime.now().with(LocalTime.of(23, 0)));
 		List<Task> tasks = repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
 					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), null);
 		List<Long> weigtedList = new ArrayList<>();
