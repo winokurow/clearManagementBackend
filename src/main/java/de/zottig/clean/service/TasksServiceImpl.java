@@ -129,6 +129,7 @@ public class TasksServiceImpl implements ITasksService {
 		LOGGER.debug("tasks" + tasks.size());
 		List<Long> weigtedList = new ArrayList<>();
 		for (Task task : tasks) {
+			LOGGER.debug("task.getComplexity()" + task.getComplexity());
 			for (int i = 0; i < 7 - task.getComplexity(); i++) {
 				weigtedList.add(task.getId());
 				LOGGER.debug("weigtedList" + task.getId());
