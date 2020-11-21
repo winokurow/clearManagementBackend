@@ -133,7 +133,7 @@ public class TasksServiceImpl implements ITasksService {
 				weigtedList.add(task.getId());
 			}
 		}
-
+		LOGGER.debug("weigtedList" + weigtedList.size());
 		while (minimalTotalComplexity > 0) {
 			int position = rand.nextInt(weigtedList.size());
 			Task task = this.getTaskById(weigtedList.get(position));
