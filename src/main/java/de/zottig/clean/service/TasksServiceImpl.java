@@ -131,9 +131,10 @@ public class TasksServiceImpl implements ITasksService {
 		for (Task task : tasks) {
 			for (int i = 0; i < 7 - task.getComplexity(); i++) {
 				weigtedList.add(task.getId());
+				LOGGER.debug("weigtedList" + task.getId());
 			}
 		}
-		LOGGER.debug("weigtedList" + weigtedList.size());
+		LOGGER.debug("weigtedList.size" + weigtedList.size());
 		while (minimalTotalComplexity > 0) {
 			int position = rand.nextInt(weigtedList.size());
 			Task task = this.getTaskById(weigtedList.get(position));
