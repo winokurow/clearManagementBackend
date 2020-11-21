@@ -130,7 +130,7 @@ public class TasksServiceImpl implements ITasksService {
 		List<Long> weigtedList = new ArrayList<>();
 		for (Task task : tasks) {
 			LOGGER.debug("task.getComplexity()" + task.getComplexity());
-			for (int i = 0; i < 7 - task.getComplexity(); i++) {
+			for (int i = 0; i < 7 - task.getPriority(); i++) {
 				weigtedList.add(task.getId());
 				LOGGER.debug("weigtedList" + task.getId());
 			}
