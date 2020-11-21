@@ -33,9 +33,9 @@ public class TasksServiceImpl implements ITasksService {
 	private ICleaningHistoryService historyService;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-	
+
 	private Random rand = new Random();
-	
+
 	/**
 	 * Get tasks list for household
 	 * 
@@ -47,15 +47,20 @@ public class TasksServiceImpl implements ITasksService {
 	 *            - assigned To
 	 */
 	@Override
-	public List<Task> getTasks(String email, boolean isOnlyCurrent, boolean showOnlyAssignedToMe) {
+	public List<Task> getTasks(String email, boolean isOnlyCurrent,
+			boolean showOnlyAssignedToMe) {
 		Member member = memberService.findUserByEmail(email);
 		if (isOnlyCurrent) {
 			if (!showOnlyAssignedToMe) {
-			return repository.findCurrentByHouseholdIdAndNextRunBefore(
-					member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)));
+				return repository.findCurrentByHouseholdIdAndNextRunBefore(
+						member.getHousehold().getId(),
+						LocalDateTime.now().with(LocalTime.of(23, 0)));
 			} else {
-				return repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
-						member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), member);
+				return repository
+						.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
+								member.getHousehold().getId(),
+								LocalDateTime.now().with(LocalTime.of(23, 0)),
+								member);
 			}
 		} else {
 			return repository.findByHouseholdId(member.getHousehold().getId());
@@ -111,30 +116,34 @@ public class TasksServiceImpl implements ITasksService {
 	public void assignTasks(long memberId, int minimalTotalComplexity) {
 		LOGGER.debug("memberId" + memberId);
 		Member member = memberService.findUserById(memberId);
-		if (member ==null) {
+		if (member == null) {
 			throw new NullPointerException("Member not found");
 		}
-			LOGGER.debug("memberId" + member.toString());
-			LOGGER.debug("member.getHousehold().getId()" + member.getHousehold().getId());
-			LOGGER.debug("LocalDateTime.now().with(LocalTime.of(23, 0))" + LocalDateTime.now().with(LocalTime.of(23, 0)));
-			List<Task> tasks = repository.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
-						member.getHousehold().getId(), LocalDateTime.now().with(LocalTime.of(23, 0)), null);
-			List<Long> weigtedList = new ArrayList<>();
-			for (Task task : tasks) {
-				for (int i = 0; i < 7 - task.getComplexity(); i++) {
-					weigtedList.add(task.getId());
-				}
+
+		List<Task> tasks = repository
+				.findCurrentByHouseholdIdAndNextRunBeforeAndAssignedTo(
+						member.getHousehold().getId(),
+						LocalDateTime.now().with(LocalTime.of(23, 0)), null);
+		LOGGER.debug("householdId" + member.getHousehold().getId());
+		LOGGER.debug("date" + LocalDateTime.now().with(LocalTime.of(23, 0)));
+		LOGGER.debug("tasks" + tasks.size());
+		List<Long> weigtedList = new ArrayList<>();
+		for (Task task : tasks) {
+			for (int i = 0; i < 7 - task.getComplexity(); i++) {
+				weigtedList.add(task.getId());
 			}
+		}
 
 		while (minimalTotalComplexity > 0) {
 			int position = rand.nextInt(weigtedList.size());
 			Task task = this.getTaskById(weigtedList.get(position));
 			task.setAssignedTo(member);
-			weigtedList.removeIf(n -> Objects.equals(n, weigtedList.get(position)));
+			weigtedList.removeIf(
+					n -> Objects.equals(n, weigtedList.get(position)));
 			minimalTotalComplexity -= task.getComplexity();
 		}
 	}
-	
+
 	/**
 	 * Find a task
 	 * 
