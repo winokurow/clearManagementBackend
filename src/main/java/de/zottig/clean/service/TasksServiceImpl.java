@@ -127,21 +127,21 @@ public class TasksServiceImpl implements ITasksService {
 		LOGGER.debug("householdId" + member.getHousehold().getId());
 		LOGGER.debug("date" + LocalDateTime.now().with(LocalTime.of(23, 0)));
 		LOGGER.debug("tasks" + tasks.size());
-		List<Long> weigtedList = new ArrayList<>();
+		List<Long> weightedList = new ArrayList<>();
 		for (Task task : tasks) {
 			LOGGER.debug("task.getComplexity()" + task.getComplexity());
 			for (int i = 0; i < 7 - task.getPriority(); i++) {
-				weigtedList.add(task.getId());
+				weightedList.add(task.getId());
 				LOGGER.debug("weigtedList" + task.getId());
 			}
 		}
-		LOGGER.debug("weigtedList.size" + weigtedList.size());
-		while (minimalTotalComplexity > 0) {
-			int position = rand.nextInt(weigtedList.size());
-			Task task = this.getTaskById(weigtedList.get(position));
+		LOGGER.debug("weigtedList.size" + weightedList.size());
+		while ((minimalTotalComplexity > 0) && (weightedList.size()>0)) {
+			int position = rand.nextInt(weightedList.size());
+			Task task = this.getTaskById(weightedList.get(position));
 			task.setAssignedTo(member);
-			weigtedList.removeIf(
-					n -> Objects.equals(n, weigtedList.get(position)));
+			weightedList.removeIf(
+					n -> Objects.equals(n, weightedList.get(position)));
 			minimalTotalComplexity -= task.getComplexity();
 		}
 	}
